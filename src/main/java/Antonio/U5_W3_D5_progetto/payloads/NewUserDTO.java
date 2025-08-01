@@ -11,7 +11,8 @@ public record NewUserDTO(
         @NotEmpty(message = "il nome utente è necessario")
         String username,
         @NotEmpty(message = "La password è obbligatoria!")
-        @Size(min = 4)
-        //@Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{4,}$", message = "La password deve contenere: 1 carat maiuscolo, uno minuscolo.....")
-        String password) {
+        String password,
+        @NotEmpty(message = "aggiungi il ruolo")
+        String role
+) {
 }

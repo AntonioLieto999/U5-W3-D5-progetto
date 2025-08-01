@@ -26,18 +26,17 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public User save(NewUserDTO payload, Role role) {
-        // Verifica email unica
+    public User save(NewUserDTO payload) {
+
         Optional<User> existing = userRepository.findByEmail(payload.email());
         if (existing.isPresent()) {
             throw new BadRequestException("L'email " + payload.email() + " è già in uso!");
         }
-
-        // Crea utente
+        
         User newUser = new User(
                 payload.username(),
                 passwordEncoder.encode(payload.password()),
-                role,
+                Role.USER,
                 payload.email()
         );
 
@@ -61,4 +60,26 @@ public class UserService {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new BadRequestException("L'utente con l'email " + email + " non è stato trovato!"));
     }
+    public User findByIdAndUpdate(int userId, NewUserDTO payload) {
+
+        User found = this.findById(userId);
+
+
+        if (!found.getEmail().equals(payload.email()))
+            this.userRepository.findByEmail(payload.email()).ifPresent(user -> {
+                throw new BadRequestException("L'email " + user.getEmail() + " è già in uso!");
+            });
+
+
+
+        found.setEmail(payload.email());
+        found.setPassword(payload.password());
+
+        User modifiedUser = this.userRepository.save(found);
+
+
+        return modifiedUser;
+    }
+
+
 }
