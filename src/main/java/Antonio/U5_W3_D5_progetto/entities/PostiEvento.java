@@ -17,7 +17,7 @@ public class PostiEvento {
     public int getId() {
         return id;
     }
-    
+
 
     public User getUser() {
         return user;
